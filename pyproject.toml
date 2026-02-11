@@ -1,0 +1,14 @@
+[project]
+name = "tdd-learning"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.14"
+dependencies = [
+    "django>=6.0.2",
+]
+
+[dependency-groups]
+dev = [
+    "selenium>=4.40.0",
+]
