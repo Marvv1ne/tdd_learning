@@ -15,9 +15,32 @@ class HomePageTest(TestCase):
         """
         тест: POST запрос сохраняется
         """
+        self.client.post("/", data={"item_text": "A new list item"})
+        self.assertEqual(Item.objects.count(), 1)
+        new_item = Item.objects.first()
+        self.assertEqual(new_item.text, "A new list item")
+
+    def test_redirect_after_POST(self):
+        """тест: переадресует после post-запроса"""
         response = self.client.post("/", data={"item_text": "A new list item"})
-        self.assertContains(response, "A new list item")
-        self.assertTemplateUsed(response, "home.html")
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response["location"], "/")
+
+    def test_only_saves_items_when_necessary(self):
+        """тест: сохраняет элементы, только когда нужно"""
+
+        self.client.get("/")
+        self.assertEqual(Item.objects.count(), 0)
+
+    def test_display_all_list_items(self):
+        """тест: отображаются все элементы списка"""
+
+        Item.objects.create(text="item 1")
+        Item.objects.create(text="item 2")
+
+        response = self.client.get("/")
+        self.assertContains(response, "item 1")
+        self.assertContains(response, "item 2")
 
 
 class ItemModelTest(TestCase):
