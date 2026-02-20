@@ -1,6 +1,9 @@
 test:
 	cd superlists && uv run manage.py test
 
+module_tests:
+	cd superlists && uv run manage.py test lists 
+
 functional_tests:
 	cd superlists && uv run manage.py test functional_tests
 
