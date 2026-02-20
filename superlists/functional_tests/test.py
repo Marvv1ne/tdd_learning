@@ -4,6 +4,9 @@ from django.test import LiveServerTestCase
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.by import By
+from selenium.common.exceptions import WebDriverException
+
+MAX_WAIT = 10
 
 
 class NewVisitorTest(LiveServerTestCase):
@@ -19,11 +22,19 @@ class NewVisitorTest(LiveServerTestCase):
 
         self.browser.quit()
 
-    def check_for_row_in_list_table(self, row_text):
-        """Подтверждение строки в таблице списка"""
-        table = self.browser.find_element(By.ID, "id_list_table")
-        rows = table.find_elements(By.TAG_NAME, "tr")
-        self.assertIn(row_text, [row.text for row in rows])
+    def wait_for_row_in_list_table(self, row_text):
+        """Ожидает строку в таблице списка"""
+        start_time = time.time()
+        while True:
+            try:
+                table = self.browser.find_element(By.ID, "id_list_table")
+                rows = table.find_elements(By.TAG_NAME, "tr")
+                self.assertIn(row_text, [row.text for row in rows])
+                return
+            except (AssertionError, WebDriverException) as e:
+                if time.time() - start_time > MAX_WAIT:
+                    raise e
+                time.sleep(0.5)
 
     def test_can_start_a_list_and_retrive_it_later(self) -> None:
         # Посетитель открывает браузер Firefox заходит на домашнюю страницу веб приложения
@@ -43,10 +54,9 @@ class NewVisitorTest(LiveServerTestCase):
         # После нажатия Enter страница обновляется и теперь на странице
         # отображается "1: Изучить TDD" в качестве элемента списка
         inputbox.send_keys(Keys.ENTER)
-        time.sleep(1)
+        self.wait_for_row_in_list_table("1: Изучить TDD")
 
         table = self.browser.find_element(By.ID, "id_list_table")
-        rows = table.find_elements(By.TAG_NAME, "tr")
 
         # Текстовое поле по-прежнему предлагает добавить еще один элемент
         # Пользователь вводить "изучить DDD"
@@ -54,16 +64,11 @@ class NewVisitorTest(LiveServerTestCase):
         inputbox = self.browser.find_element(By.ID, "id_new_item")
         inputbox.send_keys("Изучить DDD")
         inputbox.send_keys(Keys.ENTER)
-        time.sleep(1)
+        self.wait_for_row_in_list_table("2: Изучить DDD")
         table = self.browser.find_element(By.ID, "id_list_table")
-        rows = table.find_elements(By.TAG_NAME, "tr")
 
-        self.check_for_row_in_list_table("1: Изучить TDD")
+        self.wait_for_row_in_list_table("1: Изучить TDD")
 
-        self.check_for_row_in_list_table("2: Изучить DDD")
+        self.wait_for_row_in_list_table("2: Изучить DDD")
 
         self.fail("Need to finish test")
-
-
-if __name__ == "__main__":
-    unittest.main(warnings="ignore")
