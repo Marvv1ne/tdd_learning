@@ -2,7 +2,7 @@ test:
 	cd superlists && uv run manage.py test
 
 functional_tests:
-	cd superlists && uv run function_tests.py
+	cd superlists && uv run manage.py test functional_tests
 
 runserver:
 	cd superlists && uv run manage.py runserver

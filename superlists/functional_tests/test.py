@@ -1,12 +1,12 @@
-import unittest
 import time
 
+from django.test import LiveServerTestCase
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.by import By
 
 
-class NewVisitorTest(unittest.TestCase):
+class NewVisitorTest(LiveServerTestCase):
     """Тест первого посетителя"""
 
     def setUp(self) -> None:
@@ -27,7 +27,7 @@ class NewVisitorTest(unittest.TestCase):
 
     def test_can_start_a_list_and_retrive_it_later(self) -> None:
         # Посетитель открывает браузер Firefox заходит на домашнюю страницу веб приложения
-        self.browser.get("http://localhost:8000")
+        self.browser.get(self.live_server_url)
 
         # На домашней странице посетитель видит заголовок To-Do
         self.assertIn("To-Do", self.browser.title)
@@ -58,9 +58,9 @@ class NewVisitorTest(unittest.TestCase):
         table = self.browser.find_element(By.ID, "id_list_table")
         rows = table.find_elements(By.TAG_NAME, "tr")
 
-        self.check_for_row_in_list_table("1: изучит TDD")
+        self.check_for_row_in_list_table("1: Изучить TDD")
 
-        self.check_for_row_in_list_table("2: изучит DDD")
+        self.check_for_row_in_list_table("2: Изучить DDD")
 
         self.fail("Need to finish test")
 
