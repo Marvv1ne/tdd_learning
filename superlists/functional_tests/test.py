@@ -85,7 +85,7 @@ class NewVisitorTest(LiveServerTestCase):
 
         # Первый пользователь замечает, что его список имеет уникальный URL-адрес
         first_user_list_url = self.browser.current_url
-        self.assertRegex(first_user_list_url, "/lists/.+")
+        self.assertRegex(first_user_list_url, r"/lists/\d+")
 
         # Второй пользователь заходит на сайт
         # Используется новый сеанс браузера, тем самым обеспечивая, что бы
@@ -108,7 +108,7 @@ class NewVisitorTest(LiveServerTestCase):
 
         # Второй пользователь получает уникальный URL-адрес
         second_user_list_url = self.browser.current_url
-        self.assertRegex(second_user_list_url, "/list/.+")
+        self.assertRegex(second_user_list_url, r"/lists/\d+")
         self.assertNotEqual(second_user_list_url, first_user_list_url)
 
         # В списке второго пользователя нет элементов списка
