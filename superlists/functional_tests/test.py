@@ -43,7 +43,7 @@ class NewVisitorTest(LiveServerTestCase):
         # На домашней странице посетитель видит заголовок To-Do
         self.assertIn("To-Do", self.browser.title)
         header_text = self.browser.find_element(By.TAG_NAME, "h1")
-        self.assertEqual("Your To-Do list", header_text.text)
+        self.assertEqual("Start a new To-Do list", header_text.text)
 
         # Посетителю сразу же предлагается ввести элемент списка
         inputbox = self.browser.find_element(By.ID, "id_new_item")
