@@ -1,6 +1,5 @@
 import time
 import os
-from unittest import skip
 
 from django.contrib.staticfiles.testing import StaticLiveServerTestCase
 from selenium import webdriver

@@ -1,18 +1,15 @@
-from unittest import skip
-
-
 from .base import FunctionalTest
 
 
 class ItemValidationTest(FunctionalTest):
     """Тест валидации элементов списка"""
 
-    @skip
     def test_cannot_add_empty_list_items(self):
         """тест: нельзя добавлять пустые элементы списка"""
         # Пользователь открывает домашнюю страницу и случайно
         # пытается отправить пустой элемент списка.
         # Он нажимает Enter на пустом поле ввода.
+        self.browser.get(self.live_server_url)
         # Домашняя страница обновляется, и появляется сообщение
         # об ошибке, которое говорит, что элементы списка не должны
         # быть пустыми.
