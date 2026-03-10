@@ -1,5 +1,4 @@
 from django.test import TestCase
-from django.utils import text
 from lists.models import Item, List
 
 
@@ -135,3 +134,4 @@ class NewItemTest(TestCase):
         )
 
         self.assertRedirects(response, f"/lists/{correct_list.id}/")
+
