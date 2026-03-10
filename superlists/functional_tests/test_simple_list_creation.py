@@ -1,6 +1,6 @@
-from http import server
 import time
 import os
+from unittest import skip
 
 from django.contrib.staticfiles.testing import StaticLiveServerTestCase
 from selenium import webdriver
@@ -11,8 +11,8 @@ from selenium.common.exceptions import WebDriverException
 MAX_WAIT = 10
 
 
-class NewVisitorTest(StaticLiveServerTestCase):
-    """Тест первого посетителя"""
+class FunctionalTest(StaticLiveServerTestCase):
+    """функциональный тест"""
 
     def setUp(self) -> None:
         """Установка"""
@@ -40,6 +40,10 @@ class NewVisitorTest(StaticLiveServerTestCase):
                 if time.time() - start_time > MAX_WAIT:
                     raise e
                 time.sleep(0.5)
+
+
+class NewVisitorTest(FunctionalTest):
+    """Тест нового посетителя"""
 
     def test_can_start_a_list_and_retrive_it_later(self) -> None:
         # Посетитель открывает браузер Firefox заходит на домашнюю страницу веб приложения
@@ -121,30 +125,3 @@ class NewVisitorTest(StaticLiveServerTestCase):
         page_text = self.browser.find_element(By.TAG_NAME, "body").text
         self.assertNotIn("Изучить TDD", page_text)
         self.assertIn("Изучить ООП", page_text)
-
-    def test_layout_and_styling(self):
-        """тест макета и стилевого оформления"""
-        # Пользователь открывает домашнюю страницу
-        self.browser.get(self.live_server_url)
-
-        window_size = self.browser.get_window_size()
-        expected_center = window_size["width"] / 2
-
-        # Он замечает, что поле ввода аккуратно центрировано
-        inputbox = self.browser.find_element(By.ID, "id_new_item")
-        self.assertAlmostEqual(
-            inputbox.location["x"] + inputbox.size["width"] / 2,
-            expected_center,
-            delta=50,
-        )
-        # Он начинает новый список и видит, что полу ввода там тоже
-        # аккуратно центрировано
-        inputbox.send_keys("testing")
-        inputbox.send_keys(Keys.ENTER)
-        self.wait_for_row_in_list_table("1: testing")
-        inputbox = self.browser.find_element(By.ID, "id_new_item")
-        self.assertAlmostEqual(
-            inputbox.location["x"] + inputbox.size["width"] / 2,
-            expected_center,
-            delta=50,
-        )
